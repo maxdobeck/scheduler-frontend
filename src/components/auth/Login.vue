@@ -40,7 +40,7 @@
 <script>
 import { mapGetters } from 'vuex'
 let api // Need to find a way to turn all this into a function
-if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.DEV_API
 } else {
   api = process.env.TEST_API
