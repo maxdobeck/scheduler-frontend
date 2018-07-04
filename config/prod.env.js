@@ -1,6 +1,6 @@
 'use strict'
 module.exports = {
   NODE_ENV: '"production"',
-  TEST_API: '"https://shielded-stream-75107.herokuapp.com/"',
+  PROD_API: '"https://rugged-wind-cave-81042.herokuapp.com/"',
   MY_TEST: '"My big test case"'
 }
