@@ -2,38 +2,35 @@
 <v-container align-center>
   <v-form v-model="valid" ref="form" lazy-validation>
     <v-layout row justify-center>
-      <v-flex xs4>
+      <v-flex xs8>
         <v-text-field
           label="Email"
           v-model="email"
           :rules="emailRules"
           required
           autofocus
-          
         >
         </v-text-field>
       </v-flex>
     </v-layout>
     <v-layout row justify-center>
-      <v-flex xs4>
+      <v-flex xs8>
         <v-text-field
           label="Password"
           v-model="password"
           :rules="passwordRules"
+          :type="'password'"
           required
-          :append-icon="e3 ? 'visibility' : 'visibility_off'"
-          :append-icon-cb="() => (e3 = !e3)"
-          :type="e3 ? 'password' : 'text'"
         >
         </v-text-field>
       </v-flex>
     </v-layout>
     <v-layout row justify-center>
       <v-btn
-        @click="submit"
-        :disabled="!valid"
-      >
-        Login
+        @click="clickHandler"
+        :disabled="loading"
+        :loading="loading"
+      >Login
       </v-btn>
     </v-layout>
   </v-form>
@@ -41,9 +38,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+let api // Need to find a way to turn all this into a function
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+  api = 'http://localhost:3030/'
+} else {
+  api = 'https://shielded-stream-75107.herokuapp.com/'
+}
+const apiURL = api + 'login'
 export default {
   data () {
     return {
+      loading: false,
       email: '',
       emailRules: [
         v => !!v || 'Email is required',
@@ -53,10 +59,62 @@ export default {
       passwordRules: [
         v => !!v || 'Password is required'
       ],
-      e3: true,
-      valid: false
+      valid: false,
+      errors: []
     }
-  }
+  },
+  methods: {
+    clickHandler: function (e) {
+      this.loginMember()
+    },
+    loginMember: function (e) {
+      let self = this
+      let headerToken
+      this.loading = true
+      fetch(apiURL, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'X-CSRF-Token': this.token
+        },
+        body: JSON.stringify({email: this.email, password: this.password})
+      })
+        .then(function (response) {
+          headerToken = response.headers.get('X-CSRF-Token')
+          return response.json()
+        })
+        .then(response => {
+          console.log(response)
+          if (response['Status'] !== 'OK') {
+            self.errors = response['Status']
+            self.loading = false
+          } else {
+            // redirect to signup URL and save user values to vuex store
+            console.log(response['ID'])
+            this.errors = []
+            self.setCSRFToken(headerToken)
+            this.password = ''
+            this.logMemberIn()
+            this.setMemberId(response['ID'])
+            this.$router.push('/')
+            self.loading = false
+          }
+        })
+    },
+    logMemberIn () {
+      this.$store.dispatch('logMemberIn')
+    },
+    setMemberId (memberId) {
+      this.$store.dispatch('setMemberId', memberId)
+    },
+    setCSRFToken (token) {
+      this.$store.dispatch('setCSRFToken', token)
+    }
+  },
+  computed: mapGetters({
+    token: 'curCSRFToken',
+    loggedIn: 'logInStatus'
+  })
 }
 </script>
 

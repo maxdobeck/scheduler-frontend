@@ -1,23 +1,22 @@
 <template>
-  <v-stepper v-model="el">
+  <v-stepper v-model="el" id="stepper">
     <v-stepper-header>
-      <v-stepper-step step="1" editable :complete="el > 1">Name</v-stepper-step>
+      <v-stepper-step step="1" editable>Name</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="2" editable :complete="el > 2">Email</v-stepper-step>
+      <v-stepper-step step="2" editable>Email</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="3" editable :complete="el > 3">Password</v-stepper-step>
+      <v-stepper-step step="3" editable>Password</v-stepper-step>
     </v-stepper-header>
     <v-stepper-items>
       <v-stepper-content step="1">
-        <v-card class="mb-5" height="200px">
-          <v-form v-model="validName" ref="form" lazy-validation>
+        <v-card class="mb-5" height="300px">
+          <v-form v-model="validName" ref="form" lazy-validation v-on:submit.prevent>
             <v-layout row justify-center>
-              <v-flex xs4>
+              <v-flex xs8>
                 <v-text-field
                   label="Name"
                   v-model="name"
                   :rules="nameRules"
-                  required                  
                 >
                 </v-text-field>
               </v-flex>
@@ -28,22 +27,20 @@
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-card height="200px">
-          <v-form v-model="validEmail" ref="form" lazy-validation>
+        <v-card height="300px">
+          <v-form v-model="validEmail" ref="form" v-on:submit.prevent>
             <v-layout row justify-center>
-              <v-flex xs4>
+              <v-flex xs8>
                 <v-text-field
                   label="Email"
                   v-model="email"
                   :rules="nameRules"
-                  required                  
                 >
                 </v-text-field>
                 <v-text-field
                   label="Retype your email"
                   v-model="email2"
                   :rules="emailConfirmRules"
-                  required                  
                 >
                 </v-text-field>
               </v-flex>
@@ -55,49 +52,59 @@
       </v-stepper-content>
 
       <v-stepper-content step="3">
-        <v-card height="200px">
-          <v-form v-model="validPassword" ref="form">
+        <v-card height="300px">
+          <v-form v-model="validPassword" ref="form" v-on:submit.prevent>
             <v-layout row justify-center>
-              <v-flex xs4>
+              <v-flex xs8>
                 <v-text-field
                   label="Password"
                   v-model="pass"
                   :rules="passRules"
-                  :counter="15"
-                  required
-                  :append-icon="p1 ? 'visibility' : 'visibility_off'"
-                  :append-icon-cb="() => (p1 = !p1)"
-                  :type="p1 ? 'password' : 'text'"                  
+                  :counter="10"
+                  :type="'password'"
                 >
                 </v-text-field>
                 <v-text-field
-                  label="Please type your password again"
+                  label="Confirm your password"
                   v-model="pass2"
                   :rules="passConfirmRules"
-                  required
-                  :append-icon="p2 ? 'visibility' : 'visibility_off'"
-                  :append-icon-cb="() => (p2 = !p2)"
-                  :type="p2 ? 'password' : 'text'"
+                  :counter="10"
+                  :type="'password'"
                   >
                 </v-text-field>
+                <v-alert v-model="badDataAlert" type="error">
+                  Problem signing you up
+                  <p v-if="errors.length">{{errors}}</p>
+                </v-alert>
               </v-flex>
             </v-layout>
           </v-form>
         </v-card>
-        <v-btn color="primary" :disabled="!validPassword" @click.native="el = 1">Submit</v-btn>
+        <v-btn color="primary"
+          :disabled="!validPassword"
+          @click.native="clickHandler"
+          :loading="loading"
+        >Submit
+        </v-btn>
         <v-btn flat  @click.native="el = 2">Back</v-btn>
       </v-stepper-content>
     </v-stepper-items>
-  </v-stepper>  
+  </v-stepper>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+let api // Need to find a way to turn all this into a function
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+  api = 'http://localhost:3030/'
+} else {
+  api = 'https://shielded-stream-75107.herokuapp.com/'
+}
+const signupAPI = api
 export default {
   data () {
     return {
       el: 0,
-      p1: true,
-      p2: true,
       validName: false,
       name: '',
       nameRules: [
@@ -118,16 +125,64 @@ export default {
       validPassword: false,
       pass: '',
       passRules: [
-        v => v.length >= 15 || 'Password must be 15 characters or longer'
+        v => v.length >= 10 || 'Password must be 10 characters or longer'
       ],
       pass2: '',
       passConfirmRules: [
         v => v === this.pass || 'Passwords must match'
-      ]
+      ],
+      errors: [],
+      badDataAlert: false,
+      loading: false
     }
-  }
+  },
+  methods: {
+    clickHandler: function (e) {
+      this.validateSignup()
+      this.loader = 'loading'
+    },
+    validateSignup: function (e) {
+      let self = this
+      this.loading = true
+      fetch(signupAPI + 'members', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'X-CSRF-Token': this.token
+        },
+        body: JSON.stringify({ name: this.name, email: this.email, email2: this.email2, password: this.pass, password2: this.pass2 })
+      })
+        .then(res => res.json())
+        .then(res => {
+          if (res['Status'] !== 'Member Created') {
+            self.errors.push(res['Errors'])
+            self.loading = false
+          } else {
+            // redirect to welcome URL and save user values to vuex store
+            this.errors = []
+            this.pass = ''
+            this.pass2 = ''
+            this.email = ''
+            this.email2 = ''
+            this.name = ''
+            self.loading = false
+            this.$router.push('/welcome')
+          }
+        })
+    }
+  },
+  computed: mapGetters({
+    token: 'curCSRFToken'
+  })
 }
 </script>
 
 <style scoped>
+  @media screen and (min-width: 990px) {
+    .stepper {
+      width: 60%;
+      margin-left: 20%;
+      margin-top: 2%;
+    }
+  }
 </style>
