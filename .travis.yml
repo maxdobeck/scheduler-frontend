@@ -44,12 +44,12 @@ jobs:
       script:
       - yarn build
       provider: s3
-      access_key_id: "AWS Access IAM Access Key"
+      access_key_id: "AKIAJNSFST7AKQ6CU3KA"
       secret_access_key: 
-        secure: "travis secure <awssecret access key>"
+        secure: "hJJAYnyvSvY7W3kODzLpUxI/uq8ipjHoETWfl7O0nBgKAA5S1BSuNpcWgWFfSntwQv8L4sEddb3xpskMZzvGvP/+3PYoQt6bCHAdWfjOcZnG6FhC8rjU8AhwfXCmZkh4UfMiE8n3kECqy6G+LPUXzGl1XX61DUjViEspxlf5AKfQw72WKohE2XrOecWQ+mPUYR8A4f/8CON7st1CcPMAx5NQWpYhMivgmw37kNNgJlI3Z0wrkcRZ83+B/Oyd6H+XEu+/7FwdkEryBjFDKIwK2rtFUQajqnDv6K4GFy2POOnpL90zqllxpbCWa9DLmkDKma5Qsm3+ZeX8DDW0OWfCzSPH4lDXn+HXwxk1TudGYpVZyws9TbWViY3hrrcK89p5YiEeYyFiyipIWoYTyStIUKh9OmrQGK0KP+t2cz/Fp7intcZ/El80NNEsQHwuSlIAZtKRUz1K87cG94npXbumS9FDxgnyegmtwU4OpKby72oLu+u5+zCfG95vZpJZWB0ZV3FNJkkD3TNOr/0XtajLbn2J7t860nFy5yTMY7eh0Nk411e7TuOPO0PxmNp1pYoEh+DjRrmKMGF973kd24R8uObgn4MVbSk5MejjVJoJVYPbA37eI7yzE7iENZiuIiyFXxT/Cj1ApNlLFByA7hV+vI6NuHLF9A2C2Tn/RNjxdV8="
       # deploy to http://s3-sih-test.s3-website-us-west-1.amazonaws.com
       bucket: "schedulingishard.com"
-      region: "us-west-1"
+      region: "us-east-2"
       skip_cleanup: true
       local_dir: dist
       cache_control: "max-age=86400"
