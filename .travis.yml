@@ -26,7 +26,7 @@ jobs:
     deploy:
       node_js: '8'
       script:
-      - yarn buildTest
+        - yarn buildTest
       provider: s3
       on: dev
       access_key_id: "AKIAIMTCJ264OCT3MDRA"
@@ -44,7 +44,7 @@ jobs:
       on: prod
       node_js: '8'
       script:
-      - yarn build
+       - yarn build
       provider: s3
       access_key_id: "AKIAJNSFST7AKQ6CU3KA"
       secret_access_key: 
