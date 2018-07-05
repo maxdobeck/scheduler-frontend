@@ -49,7 +49,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
 }
 const apiURL = api + 'login'
 console.log(process.env.MY_TEST)
-consoel.log(process.env.NODE_ENV)
+console.log(process.env.NODE_ENV)
 export default {
   data () {
     return {
