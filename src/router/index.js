@@ -15,9 +15,7 @@ async function checkAuth (to, from, next) {
   let proceed
   await validSession().then(valid => {
     proceed = valid
-    console.log('***--->', valid)
   })
-  console.log('Proceed?', proceed)
   if (proceed === true) {
     next()
   // else if user is not logged in, go to login page
@@ -49,7 +47,6 @@ async function validSession () {
   if (status !== 200) {
     valid = false
   }
-  console.log('Status: ', status)
   return valid
 }
 
