@@ -34,7 +34,7 @@ async function checkAuth (to, from, next) {
     next()
   // else if user is not logged in, go to login page
   } else {
-    store.dispatch('logMemberOut')
+    store.dispatch('logMemberOut')  
     next('/login')
   }
 }
