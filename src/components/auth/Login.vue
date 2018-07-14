@@ -104,7 +104,8 @@ export default {
             this.setMemberEmail(response['Email'])
             this.setMemberName(response['Name'])
             this.setMemberId(response['ID'])
-            this.$router.push('/')
+            console.log(this.$route.query.redirect)
+            this.$router.push(this.$route.query.redirect)
             self.loading = false
           }
         })

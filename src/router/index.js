@@ -30,12 +30,14 @@ async function checkAuth (to, from, next) {
   await validSession().then(valid => {
     proceed = valid
   })
-  if (proceed === true) {
+  if (proceed === true && store.getters.logInStatus === true) {
     next()
   // else if user is not logged in, go to login page
   } else {
     store.dispatch('logMemberOut')
-    next('/login')
+    console.log('URL from: ', from)
+    console.log('URL to: ', to.fullPath)
+    next({name: 'Login', query: {redirect: to.fullPath}})
   }
 }
 
