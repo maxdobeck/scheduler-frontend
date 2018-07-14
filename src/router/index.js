@@ -32,10 +32,10 @@ async function checkAuth (to, from, next) {
   })
   if (proceed === true && store.getters.logInStatus === true) {
     next()
-  // else if user is not logged in, go to login page
   } else {
+    // else if user is not logged in, go to login page
     store.dispatch('logMemberOut')
-    console.log('URL from: ', from)
+    console.log('URL from: ', from.fullPath)
     console.log('URL to: ', to.fullPath)
     next({name: 'Login', query: {redirect: to.fullPath}})
   }
