@@ -7,8 +7,22 @@ import Signup from '@/components/auth/Signup'
 import Home from '@/components/Home'
 import Schedules from '@/components/Schedules'
 import Welcome from '@/components/Welcome'
+import Settings from '@/components/Settings'
 
 Vue.use(Router)
+
+export default new Router({
+  mode: 'history',
+  routes: [
+    { path: '/', name: 'Home', component: Home },
+    { path: '/schedules', name: 'Schedules', component: Schedules, beforeEnter: checkAuth },
+    { path: '/login', name: 'Login', component: Login },
+    { path: '/logout', name: 'Logout', component: Logout },
+    { path: '/signup', name: 'Signup', component: Signup },
+    { path: '/welcome', name: 'Welcome', component: Welcome },
+    { path: '/settings', name: 'Settings', component: Settings, beforeEnter: checkAuth }
+  ]
+})
 
 async function checkAuth (to, from, next) {
   // if user is logged in, move to next route
@@ -50,15 +64,3 @@ async function validSession () {
   }
   return valid
 }
-
-export default new Router({
-  mode: 'history',
-  routes: [
-    { path: '/', name: 'Home', component: Home },
-    { path: '/schedules', name: 'Schedules', component: Schedules, beforeEnter: checkAuth },
-    { path: '/login', name: 'Login', component: Login },
-    { path: '/logout', name: 'Logout', component: Logout },
-    { path: '/signup', name: 'Signup', component: Signup },
-    { path: '/welcome', name: 'Welcome', component: Welcome }
-  ]
-})
