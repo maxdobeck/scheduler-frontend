@@ -35,8 +35,6 @@ async function checkAuth (to, from, next) {
   } else {
     // else if user is not logged in, go to login page
     store.dispatch('logMemberOut')
-    console.log('URL from: ', from.fullPath)
-    console.log('URL to: ', to.fullPath)
     next({name: 'Login', query: {redirect: to.fullPath}})
   }
 }

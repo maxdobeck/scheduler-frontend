@@ -105,7 +105,6 @@ export default {
             this.setMemberName(response['Name'])
             this.setMemberId(response['ID'])
             self.loading = false
-            console.log(this.$route.query.redirect)
             if (this.$route.query.redirect !== undefined) {
               this.$router.push(this.$route.query.redirect)
             } else {
