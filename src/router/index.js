@@ -7,22 +7,35 @@ import Signup from '@/components/auth/Signup'
 import Home from '@/components/Home'
 import Schedules from '@/components/Schedules'
 import Welcome from '@/components/Welcome'
+import Settings from '@/components/Settings'
 
 Vue.use(Router)
+
+export default new Router({
+  mode: 'history',
+  routes: [
+    { path: '/', name: 'Home', component: Home },
+    { path: '/schedules', name: 'Schedules', component: Schedules, beforeEnter: checkAuth },
+    { path: '/login', name: 'Login', component: Login },
+    { path: '/logout', name: 'Logout', component: Logout },
+    { path: '/signup', name: 'Signup', component: Signup },
+    { path: '/welcome', name: 'Welcome', component: Welcome },
+    { path: '/settings', name: 'Settings', component: Settings, beforeEnter: checkAuth }
+  ]
+})
 
 async function checkAuth (to, from, next) {
   // if user is logged in, move to next route
   let proceed
   await validSession().then(valid => {
     proceed = valid
-    console.log('***--->', valid)
   })
-  console.log('Proceed?', proceed)
-  if (proceed === true) {
+  if (proceed === true && store.getters.logInStatus === true) {
     next()
-  // else if user is not logged in, go to login page
   } else {
-    next('/login')
+    // else if user is not logged in, go to login page
+    store.dispatch('logMemberOut')
+    next({name: 'Login', query: {redirect: to.fullPath}})
   }
 }
 
@@ -49,18 +62,5 @@ async function validSession () {
   if (status !== 200) {
     valid = false
   }
-  console.log('Status: ', status)
   return valid
 }
-
-export default new Router({
-  mode: 'history',
-  routes: [
-    { path: '/', name: 'Home', component: Home },
-    { path: '/schedules', name: 'Schedules', component: Schedules, beforeEnter: checkAuth },
-    { path: '/login', name: 'Login', component: Login },
-    { path: '/logout', name: 'Logout', component: Logout },
-    { path: '/signup', name: 'Signup', component: Signup },
-    { path: '/welcome', name: 'Welcome', component: Welcome }
-  ]
-})

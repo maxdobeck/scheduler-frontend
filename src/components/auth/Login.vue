@@ -39,7 +39,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-let api // Need to find a way to turn all this into a function
+let api // move this whole thing into a vuex action
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.DEV_API
 } else if (process.env.NODE_ENV === 'test') {
@@ -48,8 +48,6 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.PROD_API
 }
 const apiURL = api + 'login'
-console.log(process.env.MY_TEST)
-console.log(process.env.NODE_ENV)
 export default {
   data () {
     return {
@@ -85,23 +83,33 @@ export default {
       })
         .then(function (response) {
           headerToken = response.headers.get('X-CSRF-Token')
+          if (response.status === 403) {
+            self.errors = "Please reload.  It looks like you're missing a cookie."
+            console.log(self.errors)
+            return response.status
+          }
           return response.json()
         })
         .then(response => {
-          console.log(response)
           if (response['Status'] !== 'OK') {
-            self.errors = response['Status']
             self.loading = false
+            self.errors = response['Status']
           } else {
             // redirect to signup URL and save user values to vuex store
-            console.log(response['ID'])
+            console.log(response)
             this.errors = []
             self.setCSRFToken(headerToken)
             this.password = ''
             this.logMemberIn()
+            this.setMemberEmail(response['Email'])
+            this.setMemberName(response['Name'])
             this.setMemberId(response['ID'])
-            this.$router.push('/')
             self.loading = false
+            if (this.$route.query.redirect !== undefined) {
+              this.$router.push(this.$route.query.redirect)
+            } else {
+              this.$router.push('/')
+            }
           }
         })
     },
@@ -110,6 +118,12 @@ export default {
     },
     setMemberId (memberId) {
       this.$store.dispatch('setMemberId', memberId)
+    },
+    setMemberName (memberName) {
+      this.$store.dispatch('setMemberName', memberName)
+    },
+    setMemberEmail (memberEmail) {
+      this.$store.dispatch('setMemberEmail', memberEmail)
     },
     setCSRFToken (token) {
       this.$store.dispatch('setCSRFToken', token)
