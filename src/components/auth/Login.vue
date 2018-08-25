@@ -96,34 +96,22 @@ export default {
             self.errors = response['Status']
           } else {
             // redirect to signup URL and save user values to vuex store
-            console.log(response)
             this.errors = []
             self.setCSRFToken(headerToken)
             this.password = ''
             this.logMemberIn()
-            this.setMemberEmail(response['Email'])
-            this.setMemberName(response['Name'])
-            this.setMemberId(response['ID'])
+            this.email = ''
             self.loading = false
             if (this.$route.query.redirect !== undefined) {
               this.$router.push(this.$route.query.redirect)
             } else {
-              this.$router.push('/')
+              this.$router.push('/home')
             }
           }
         })
     },
     logMemberIn () {
       this.$store.dispatch('logMemberIn')
-    },
-    setMemberId (memberId) {
-      this.$store.dispatch('setMemberId', memberId)
-    },
-    setMemberName (memberName) {
-      this.$store.dispatch('setMemberName', memberName)
-    },
-    setMemberEmail (memberEmail) {
-      this.$store.dispatch('setMemberEmail', memberEmail)
     },
     setCSRFToken (token) {
       this.$store.dispatch('setCSRFToken', token)

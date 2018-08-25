@@ -1,15 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
 import members from './modules/members'
+import schedules from './modules/schedules'
 
 Vue.use(Vuex)
 
 // const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
+	strict: process.env.NODE_ENV !== 'production', // strict mode must be turned off for prod -> https://vuex.vuejs.org/guide/strict.html
   modules: {
-    members
-  },
-  plugins: [createPersistedState()]
+    members,
+    schedules
+  }
 })

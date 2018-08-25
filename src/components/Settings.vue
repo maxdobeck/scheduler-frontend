@@ -1,5 +1,5 @@
 <template>
-  <v-layout row justify-center id="container">
+  <v-layout row justify-center id="settings-container">
     <v-flex>
       <v-dialog
       @keydown.esc="nameModal = false"
@@ -19,7 +19,7 @@
       <v-card id="memberCard">
         <h3>Name</h3>
         <div id="body">
-          {{memberName}}
+          {{ memberName }}
           <v-btn @click.stop="nameModal = true">Edit</v-btn>
         </div>
       </v-card>
@@ -45,8 +45,10 @@
 
       <v-card id="memberCard">
         <h3>Email</h3>
-        {{memberEmail}}
-        <v-btn @click.stop="emailModal = true">Edit</v-btn>
+        <div id="body">
+          {{ memberEmail }}
+          <v-btn @click.stop="emailModal = true">Edit</v-btn>
+        </div>
       </v-card>
 
       <v-dialog
@@ -161,9 +163,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  #container {
+  #settings-container {
     margin-top: 2%;
-    margin-left: 30%;
+    margin-left: 15%;
   }
   #memberCard {
     width: 35%;
@@ -172,7 +174,7 @@ export default {
     margin-top: 1%;
   }
   #modal {
-    padding: 10px;
+    padding: 20px;
   }
   #delBtn {
     margin-left: 0px;
