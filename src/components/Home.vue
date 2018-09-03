@@ -2,7 +2,7 @@
   <v-container align-content-center>
     <v-layout column>
       <v-flex>
-        <h1 id="homeTitle">Scheduling Is Hard</h1>
+        <h1 id="homeTitle">Hi {{ username }}, scheduling is hard</h1>
       </v-flex>
       <v-flex>
         <h2 id="homeSub">Let us help!</h2>
@@ -12,6 +12,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+export default {
+  data () {
+    return {
+    }
+  },
+  name: 'Home',
+  computed: {
+    ...mapGetters({
+      username: 'memberName'
+    })
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

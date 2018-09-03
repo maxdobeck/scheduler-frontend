@@ -1,0 +1,86 @@
+# Javascript Node CircleCI 2.0 configuration file
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:8
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/scheduler-frontend
+
+    steps:
+      - checkout
+      - run: mkdir -p workspace/dist/prod
+      - run: mkdir -p workspace/dist/uat
+
+      - run: yarn install
+
+      - run: yarn lint
+      - run: yarn build
+      - run: cp -R dist/. workspace/dist/prod
+      - persist_to_workspace:
+          root: workspace
+          paths: dist/prod
+      - run: yarn buildTest
+      - run: cp -R dist/. workspace/dist/uat
+      - run: ls workspace/dist/prod
+      - run: ls workspace/dist/uat
+      - persist_to_workspace:
+          root: workspace
+          paths: dist/uat
+      # run tests
+      # - run: yarn test
+  deploy-UAT:
+    docker:
+      - image: circleci/python:2.7-jessie
+    working_directory: ~/circleci-docs
+    steps:
+      - run: mkdir -p workspace
+      - attach_workspace:
+          at: workspace
+      - run: ls workspace/dist/uat
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
+      - run:
+          name: Deploy buildTest output to AWS S3
+          command: aws s3 sync ~/circleci-docs/workspace/dist/uat s3://s3-sih-test --delete
+  deploy-prod:
+    docker:
+      - image: circleci/python:2.7-jessie
+    working_directory: ~/circleci-docs
+    steps:
+      - run: mkdir -p workspace
+      - attach_workspace:
+          at: workspace
+      - run: ls workspace/dist/prod
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
+      - run:
+          name: Deploy buildTest output to AWS S3
+          command: aws s3 sync ~/circleci-docs/workspace/dist/uat s3://schedulingishard.com --delete
+workflows:
+  version: 2
+  build_deploy:
+    jobs:
+      - build
+      - deploy-UAT:
+          requires:
+            - build
+          filters:
+            branches:
+              only: dev
+      - deploy-prod:
+          requires:
+            - build
+          filters:
+            branches:
+              only: prod

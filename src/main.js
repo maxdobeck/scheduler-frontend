@@ -6,8 +6,12 @@ import router from './router'
 import store from '../store'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import moment from 'moment'
 
 Vue.use(Vuetify)
+
+// Can I also use Vue.use(moment)? Or do I need the vue-moment package for that?
+Vue.prototype.moment = moment
 
 Vue.config.productionTip = false
 

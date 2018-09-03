@@ -1,22 +1,47 @@
 <template>
-  <v-app>
-    <v-toolbar
-    flat
-    app
-    id="navbar"
-    >
-      <v-toolbar-items>
-        <v-btn :ripple="false" flat to="/" id="home" >Home</v-btn>
-        <v-btn :ripple="false" flat to="/schedules" v-if="loggedIn" id="schedules">Schedules</v-btn>
-      </v-toolbar-items>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn :ripple="false" flat raised to="/signup" v-if="!loggedIn" id="signup">Sign Up</v-btn>
-        <v-btn :ripple="false" flat raised to="/login" v-if="!loggedIn" id="logInOut">Log In</v-btn>
-        <v-btn @click="logMemberOut" :ripple="false" flat raised v-if="loggedIn" id="logInOut">Log Out</v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
-
+  <v-app id="wholeApp">
+    <nav class="navbar">
+      <router-link v-if="!loggedIn" id="landing" class="navBtn" to="/">
+        Scheduling is Hard
+      </router-link>
+      <router-link
+      v-if="loggedIn"
+      id="home"
+      class="navBtn"
+      to="/home">
+        Home</router-link>
+      <router-link
+      v-if="loggedIn"
+      id="schedules"
+      class="navBtn"
+      to="/schedules">
+        Schedules</router-link>
+      <router-link
+        v-if="loggedIn"
+        id="settings"
+        class="navBtn"
+        to="/settings">
+        Settings</router-link>
+      <router-link
+      v-if="!loggedIn"
+      id="signup"
+      class="navBtn"
+      to="signup">
+        Sign Up</router-link>
+      <router-link
+        v-if="!loggedIn"
+        id="logInOut"
+        class="navBtn"
+        to="/login">
+        Log In</router-link>
+      <router-link to="/">
+        <a @click="logoutHandler"
+        v-if="loggedIn"
+        id="logInOut"
+        class="navBtn">Log Out</a>
+      </router-link>
+      <span v-if='loggedIn' id="welcome">Hi {{ memberName }}</span>
+    </nav>
     <v-content>
       <transition>
         <keep-alive>
@@ -28,6 +53,7 @@
 </template>
 
 <script>
+import store from '../store/index'
 import { mapGetters } from 'vuex'
 let api // Need to find a way to turn all this into a function
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
@@ -49,40 +75,47 @@ export default {
     setCSRFToken (token) {
       this.$store.dispatch('setCSRFToken', token)
     },
+    logoutHandler () {
+      this.logMemberOut()
+    },
     logMemberOut () {
+      store.dispatch('logMemberOut')
       this.$router.push('/')
-      this.$store.dispatch('logMemberOut')
     }
   },
-  computed: mapGetters({
-    token: 'curCSRFToken',
-    loggedIn: 'logInStatus'
-  }),
+  computed: {
+    ...mapGetters({
+      token: 'curCSRFToken',
+      loggedIn: 'logInStatus',
+      memberName: 'memberName',
+      memberEmail: 'memberEmail'
+    })
+  },
   created:
-    function () {
+    async function () {
       fetch(apiURL, {
         method: 'GET',
         credentials: 'include'
       })
         .then(response => this.setCSRFToken(response.headers.get('X-CSRF-Token')))
+      await store.dispatch('getCurMember')
+      await store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
     }
 }
 </script>
 
 <style scoped>
-  #home {
-    margin-left: 5%;
+  .navBtn {
+    margin-right: 4px;
+    font-size: 1.1em;
   }
-  #schedules {
-    margin-left: 5%;
+  .navBtn:hover {
+    color: orange;
   }
-  #signup {
-    margin-right: 5%;
+  #wholeApp {
+    background-color: white;
   }
-  #logInOut {
-    margin-right: 5%;
-  }
-  #navbar {
+  #wholeApp {
     background-color: white;
   }
 </style>
