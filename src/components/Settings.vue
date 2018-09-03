@@ -105,7 +105,7 @@ export default {
         headers: {
           'X-CSRF-Token': this.token
         },
-        body: JSON.stringify({newName: this.newName})
+        body: JSON.stringify({ newName: this.newName })
       })
         .then(response => {
           this.nameModal = false
@@ -128,7 +128,7 @@ export default {
         headers: {
           'X-CSRF-Token': this.token
         },
-        body: JSON.stringify({newEmail1: this.newEmail1, newEmail2: this.newEmail2})
+        body: JSON.stringify({ newEmail1: this.newEmail1, newEmail2: this.newEmail2 })
       })
         .then(response => {
           this.emailModal = false

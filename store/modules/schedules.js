@@ -16,6 +16,9 @@
   const actions = {
     async getOwnedSchedules({commit, state}, memberID) {
   	 // Make the Fetch req to the API
+     if (memberID === '') {
+      return
+     }
       await fetch(apiGetOwnedSchedules+memberID, {
         method: 'GET',
         credentials: 'include'

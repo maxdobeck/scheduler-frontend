@@ -11,6 +11,7 @@ import Welcome from '@/components/Welcome'
 import Settings from '@/components/Settings'
 import NewSchedule from '@/components/schedules/NewSchedule'
 import Schedule from '@/components/schedules/Schedule'
+import NoAccess from '@/components/schedules/NoAccess'
 
 Vue.use(Router)
 
@@ -24,6 +25,7 @@ export default new Router({
     // This will be the first route where the user may get a 403 Forbidden due to not being the schedule owner
     // This is the CRUD page for the schedule and shifts on the schedule so only the owner(s) should be able to reach it
     { path: '/schedules/:id', name: 'Schedule', component: Schedule, beforeEnter: checkAuth },
+    { path: '/not-authorized', name: 'No Access', component: NoAccess },
     { path: '/login', name: 'Login', component: Login },
     { path: '/logout', name: 'Logout', component: Logout },
     { path: '/signup', name: 'Signup', component: Signup },
@@ -39,14 +41,12 @@ async function checkAuth (to, from, next) {
     proceed = valid
   })
   if (proceed === true) {
-    await store.dispatch('getCurMember')
-    await store.dispatch('getOwnedSchedules', store.getters.curMemberId)
     store.dispatch('logMemberIn')
     next()
   } else {
     // else if user is not logged in, go to login page
     store.dispatch('logMemberOut')
-    next({name: 'Login', query: {redirect: to.fullPath}})
+    next({ name: 'Login', query: { redirect: to.fullPath } })
   }
 }
 

@@ -1,28 +1,47 @@
 <template>
   <v-app id="wholeApp">
-    <div id="navbar">
+    <nav class="navbar">
+      <router-link v-if="!loggedIn" id="landing" class="navBtn" to="/">
+        Scheduling is Hard
+      </router-link>
+      <router-link
+      v-if="loggedIn"
+      id="home"
+      class="navBtn"
+      to="/home">
+        Home</router-link>
+      <router-link
+      v-if="loggedIn"
+      id="schedules"
+      class="navBtn"
+      to="/schedules">
+        Schedules</router-link>
+      <router-link
+        v-if="loggedIn"
+        id="settings"
+        class="navBtn"
+        to="/settings">
+        Settings</router-link>
+      <router-link
+      v-if="!loggedIn"
+      id="signup"
+      class="navBtn"
+      to="signup">
+        Sign Up</router-link>
+      <router-link
+        v-if="!loggedIn"
+        id="logInOut"
+        class="navBtn"
+        to="/login">
+        Log In</router-link>
       <router-link to="/">
-        <a to="/" v-if="!loggedIn" id="landing" class="navBtn">Scheduling is Hard</a>
+        <a @click="logoutHandler"
+        v-if="loggedIn"
+        id="logInOut"
+        class="navBtn">Log Out</a>
       </router-link>
-      <router-link to="/home">
-        <a v-if="loggedIn" id="home" class="navBtn">Home</a>
-      </router-link>
-      <router-link to="/schedules">
-        <a v-if="loggedIn" id="schedules" class="navBtn">Schedules</a>
-      </router-link>
-      <router-link to="/settings" >
-        <a v-if="loggedIn" id="settings" class="navBtn">Settings</a>
-      </router-link>
-      <router-link to="signup">
-        <a v-if="!loggedIn" id="signup" class="navBtn">Sign Up</a>
-      </router-link>
-      <router-link to="/login">
-        <a v-if="!loggedIn" id="logInOut" class="navBtn">Log In</a>
-      </router-link>
-      <router-link to="/">
-        <a @click="logoutHandler" v-if="loggedIn" id="logInOut" class="navBtn">Log Out</a>
-      </router-link>
-    </div>
+      <span v-if='loggedIn' id="welcome">Hi {{ memberName }}</span>
+    </nav>
     <v-content>
       <transition>
         <keep-alive>
@@ -73,28 +92,27 @@ export default {
     })
   },
   created:
-    function () {
+    async function () {
       fetch(apiURL, {
         method: 'GET',
         credentials: 'include'
       })
         .then(response => this.setCSRFToken(response.headers.get('X-CSRF-Token')))
+      await store.dispatch('getCurMember')
+      await store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
     }
 }
 </script>
 
 <style scoped>
   .navBtn {
-    text-transform: none;
-    text-decoration: none;
-    width: 8%;
-    padding: 0px;
-    margin: 0px;
+    margin-right: 4px;
+    font-size: 1.1em;
   }
   .navBtn:hover {
-    color: darkblue;
+    color: orange;
   }
-  #navbar {
+  #wholeApp {
     background-color: white;
   }
   #wholeApp {

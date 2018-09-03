@@ -3,16 +3,27 @@
     <v-layout row wrap id="header">
       <h1 class="page-title">Schedules</h1>
       <v-btn @click="newSchedule" flat id="new-schedule" color="primary">New Schedule</v-btn>
+      <v-btn
+        flat
+        color="blue"
+        icon
+        :disabled="loading"
+        :loading="loading"
+        @click="refreshHandler"
+      >
+      <v-icon>refresh</v-icon>
+      </v-btn>
     </v-layout>
 
     <div class="list-container">
       <ul id="schedule-list">
         <li v-for="schedule in schedules" :key="schedule.id" class="schedule">
-          <router-link :to='`/schedules/${schedule.Id}`'>{{ schedule.Title }}</router-link>
+          <router-link id="schedule-title" :to='`/schedules/${schedule.Id}`'>{{ schedule.Title }}</router-link>
           <v-btn @click="deleteConfirmation(schedule)" flat color="error">Delete</v-btn>
           <v-dialog
             @keydown.esc="delModal = false"
             v-model="delModal"
+            hide-overlay
             max-width="290"
           >
             <v-card id="modal">
@@ -46,7 +57,8 @@ export default {
       errors: [],
       delModal: false,
       alert: false,
-      scheduleToDelete: ''
+      scheduleToDelete: '',
+      loading: false
     }
   },
   name: 'Schedules',
@@ -79,7 +91,22 @@ export default {
             store.dispatch('getOwnedSchedules', store.getters.curMemberId)
           }
         })
+    },
+    refreshHandler () {
+      this.loading = true
+      let self = this
+      this.refreshSchedules()
+        .then(function () {
+          self.loading = false
+        })
+    },
+    async refreshSchedules () {
+      await store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
     }
+  },
+  watch: {
+    // call again the method if the route changes
+    '$route': 'refreshSchedules'
   },
   computed: {
     ...mapGetters({
@@ -87,7 +114,11 @@ export default {
       schedules: 'ownedSchedules',
       token: 'curCSRFToken'
     })
-  }
+  },
+  created:
+    async function () {
+      await store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
+    }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -103,14 +134,16 @@ export default {
     grid-row: 1;
   }
   .list-container {
-    grid-column: 2/3;
+    grid-column: 2/4;
     grid-row: 2;
+    overflow-wrap: break-word;
+    width: 50%;
   }
   .schedule {
     list-style: none;
     font-size: 2em;
   }
   #modal {
-    padding: 20px;
-}
+    padding: 10px;
+  }
 </style>

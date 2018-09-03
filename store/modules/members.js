@@ -40,8 +40,8 @@
     logMemberIn ({commit, state}) {
       commit('logMemberIn')
     },
-    async logMemberOut ({commit, state}) {
-      await fetch(apiLogoutMember, {
+    logMemberOut ({commit, state}) {
+      fetch(apiLogoutMember, {
         method: 'DELETE',
         credentials: 'include',
         headers: {
@@ -50,6 +50,9 @@
       })
       .then(function (response) {
         commit('logMemberOut')
+        commit('setMemberId', '')
+        commit('setMemberName', '')
+        commit('setMemberEmail', '')
       })
     },
     setMemberId ({commit, state}, id) {
@@ -71,10 +74,11 @@
           return response.json()
         })
         .then(function (response) {
-          if (response.details.status !== 'OK') {
+          if (response.details.status !=='OK') {
             console.log("Problem fetching current user's data.")
           }
           else {
+            console.log("We're trying to update the curmember in vuex: ", response.member.email)
             commit('setMemberEmail', response.member.email)
             commit('setMemberName', response.member.name)
             commit('setMemberId',response.member.id)

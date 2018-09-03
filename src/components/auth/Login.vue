@@ -79,7 +79,7 @@ export default {
         headers: {
           'X-CSRF-Token': this.token
         },
-        body: JSON.stringify({email: this.email, password: this.password})
+        body: JSON.stringify({ email: this.email, password: this.password })
       })
         .then(function (response) {
           headerToken = response.headers.get('X-CSRF-Token')
@@ -98,15 +98,19 @@ export default {
             // redirect to signup URL and save user values to vuex store
             this.errors = []
             self.setCSRFToken(headerToken)
-            this.password = ''
+            console.log('Member Details Response: ', response)
+            this.$store.dispatch('setMemberName', response.Name)
+            this.$store.dispatch('setMemberId', response.ID)
+            this.$store.dispatch('setMemberEmail', response.Email)
             this.logMemberIn()
-            this.email = ''
-            self.loading = false
             if (this.$route.query.redirect !== undefined) {
               this.$router.push(this.$route.query.redirect)
             } else {
               this.$router.push('/home')
             }
+            this.email = ''
+            this.password = ''
+            self.loading = false
           }
         })
     },

@@ -1,21 +1,37 @@
 <template>
-  <div class="container">
-    <p v-show="editTitle === false" @dblclick="editTitle = true" id="header">{{ schedule.Title }}</p>
-    <input v-show="editTitle === true"
-    v-model="newTitle"
-    @keyup.enter = "saveTitle"
-    v-on:blur = "editTitle = false"
-    placeholder="New Schedule Title"
-    id="header">
-    <div id="alert" v-show="alert === true">
-      <p> {{ errors }} </p>
-      <button @click="alert = false">ok</button>
+  <div class="schedule-container" >
+    <div class="schedule-header">
+      <div class="schedule-title">
+      <p v-show="editTitle === false"
+        @dblclick="editTitle = true"
+        id="header">
+        {{ schedule.Title }}
+      </p>
+      <input v-show="editTitle === true"
+        v-model="newTitle"
+        @keyup.enter = "saveTitle"
+        v-on:blur = "editTitle = false"
+        placeholder="New Schedule Title"
+        id="header">
+      </div>
+      <div class="schedule-links">
+        <router-link to="#" class="schedule-meta">PTO Board</router-link>
+        <router-link to="#" class="schedule-meta">Shifts</router-link>
+        <div id="alert" v-show="alert === true">
+          <p> {{ errors }} </p>
+          <button @click="alert = false">ok</button>
+        </div>
+      </div>
+      <div class="schedule-calendar-component">
+        <Calendar></Calendar>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import Calendar from './Calendar.vue'
 let api // Need to find a way to turn all this into a function
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.DEV_API
@@ -26,6 +42,9 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
 }
 const apiSchedules = api + 'schedules'
 export default {
+  components: {
+    Calendar
+  },
   data () {
     return {
       errors: [],
@@ -57,7 +76,10 @@ export default {
         })
         .then(response => {
           if (response.Status !== 'OK') {
-            self.errors = response.Errors
+            this.errors = response.Errors
+            if (response.Status === 'Not Authorized') {
+              this.$router.push('/not-authorized')
+            }
           } else {
             self.schedule = response.FoundSchedule
           }
@@ -72,7 +94,7 @@ export default {
         headers: {
           'X-CSRF-Token': this.token
         },
-        body: JSON.stringify({newTitle: self.newTitle})
+        body: JSON.stringify({ newTitle: self.newTitle })
       })
         .then(function (response) {
           return response.json()
@@ -102,26 +124,29 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  width: 100%;
-  margin-left: 5%;
-  margin-right: 0px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
-  grid-auto-rows: minmax(100px, auto);
+.schedule-header {
+  margin-top: 1%;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+.schedule-title {
+  display: inline-block;
+}
+.schedule-links {
+  display: inline-block;
+}
+.schedule-meta {
+  display: inline-block;
+  width: 100px;
 }
 #header {
-  grid-column: 1/3;
-  grid-row: 1;
-  font-size: 3em;
+  display: inline-block;
+  font-size: 2.5em;
 }
 #alert {
   background: #fff;
   border-radius: 5px;
   width: 100%;
   position: relative;
-  grid-column: 1/3;
-  grid-row: 1;
 }
 </style>

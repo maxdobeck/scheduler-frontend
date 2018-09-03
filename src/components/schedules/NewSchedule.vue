@@ -42,7 +42,7 @@ export default {
         headers: {
           'X-CSRF-Token': this.token
         },
-        body: JSON.stringify({OwnerID: this.memberID, Title: this.newScheduleTitle})
+        body: JSON.stringify({ OwnerID: this.memberID, Title: this.newScheduleTitle })
       })
         .then(response => {
           this.emailModal = false
