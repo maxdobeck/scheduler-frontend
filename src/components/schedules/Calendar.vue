@@ -123,6 +123,7 @@ export default {
     border-width: 1px;
     border-right: dotted;
     text-align: center;
+    margin-top: 8px;
   }
   .calendar-enrollees-pane {
     box-sizing: border-box;
