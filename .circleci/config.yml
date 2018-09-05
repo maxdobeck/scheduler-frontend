@@ -66,7 +66,7 @@ jobs:
           command: sudo pip install awscli
       - run:
           name: Deploy buildTest output to AWS S3
-          command: aws s3 sync ~/circleci-docs/workspace/dist/prod s3://schedulingishard.com --delete
+          command: aws s3 sync ~/circleci-docs/workspace/dist/uat s3://schedulingishard.com --delete
 workflows:
   version: 2
   build_deploy:
