@@ -34,7 +34,7 @@
         <p>Wednesday</p>
       </div>
             <div class="calendar-day">
-        <p>Thirsday</p>
+        <p>Thursday</p>
       </div>
             <div class="calendar-day">
         <p>Friday</p>
@@ -47,10 +47,19 @@
 
   <div class="calendar-enrollees-pane">
     <div class="enrollee-pane-header">
-      <v-icon class="enrolle-nav">list</v-icon>
-      <h4 class="enrolle-nav">Enrollees</h4>
+      <h4 class="enrollee-nav">Enrollees</h4>
+
+      <div class="enrollee-button-row">
+        <v-btn id="add-enrollee" class="enrollee-buttons" slot="activator" small flat color="blue">
+          <v-icon>person_add</v-icon>
+        </v-btn>
+
+        <v-btn id="sort-enrollee-list" class="enrollee-buttons" slot="activator" small flat color="blue">
+          <v-icon>sort</v-icon>
+        </v-btn>
+      </div>
     </div>
-    <div class="enrollees-list">
+    <div class="enrollee-list">
       <p>You don't have anyone enrolled in this schedule</p>
     </div>
   </div>
@@ -130,14 +139,24 @@ export default {
     border-style: solid;
     border-width: 2px;
     float: left;
-    width: 8%;
+    width: 20%;
   }
-  .enrolle-nav {
+  .enrollee-nav {
     display: inline-block;
     vertical-align: middle;
+    margin-left: 5px;
+    margin-right: 5px;
   }
-  .enrollees-list {
-    margin: 10px;
+  .enrollee-button-row {
+    margin-left: 5px;
+  }
+  .enrollee-buttons {
+    display: inline-block;
+    margin: 0px;
+    padding: 0px;
+  }
+  .enrollee-list {
+    margin: 8px;
   }
   #date-display {
     width: 140px;
