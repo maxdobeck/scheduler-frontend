@@ -17,8 +17,8 @@
 
     <div class="list-container">
       <ul id="schedule-list">
-        <li v-for="schedule in schedules" :key="schedule.id" class="schedule">
-          <router-link id="schedule-title" :to='`/schedules/${schedule.Id}`'>{{ schedule.Title }}</router-link>
+        <li v-for="schedule in schedules" :key="schedule.ID" class="schedule">
+          <router-link id="schedule-title" :to='`/schedules/${schedule.ID}`'>{{ schedule.Title }}</router-link>
           <v-btn @click="deleteConfirmation(schedule)" flat color="error">Delete</v-btn>
           <v-dialog
             @keydown.esc="delModal = false"
@@ -28,7 +28,7 @@
           >
             <v-card id="modal">
               <p>Are you sure you want to delete: "{{ scheduleToDelete.Title }}"</p>
-              <v-btn color="error" @click="deleteSchedule(scheduleToDelete.Id)">Delete</v-btn>
+              <v-btn color="error" @click="deleteSchedule(scheduleToDelete.ID)">Delete</v-btn>
               <v-btn @click.stop="delModal = false;">Cancel</v-btn>
             </v-card>
           </v-dialog>
@@ -47,7 +47,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.DEV_API
 } else if (process.env.NODE_ENV === 'test') {
   api = process.env.TEST_API
-} else {
+} else if (process.env.NODE_ENV === 'production') {
   api = process.env.PROD_API
 }
 const apiDeleteSchedule = api + 'schedules'
@@ -105,8 +105,9 @@ export default {
     }
   },
   watch: {
-    // call again the method if the route changes
-    '$route': 'refreshSchedules'
+    memberID: async function () {
+      await store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
+    }
   },
   computed: {
     ...mapGetters({
@@ -114,11 +115,7 @@ export default {
       schedules: 'ownedSchedules',
       token: 'curCSRFToken'
     })
-  },
-  created:
-    async function () {
-      await store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
-    }
+  }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

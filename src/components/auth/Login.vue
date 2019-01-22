@@ -30,6 +30,7 @@
         @click="clickHandler"
         :disabled="loading"
         :loading="loading"
+        color="primary"
       >Login
       </v-btn>
     </v-layout>
@@ -44,7 +45,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.DEV_API
 } else if (process.env.NODE_ENV === 'test') {
   api = process.env.TEST_API
-} else {
+} else if (process.env.NODE_ENV === 'production') {
   api = process.env.PROD_API
 }
 const apiURL = api + 'login'
@@ -73,6 +74,7 @@ export default {
       let self = this
       let headerToken
       this.loading = true
+      console.log('Current csrf token: ', this.token)
       fetch(apiURL, {
         method: 'POST',
         credentials: 'include',
@@ -87,7 +89,10 @@ export default {
             self.errors = "Please reload.  It looks like you're missing a cookie."
             console.log(self.errors)
             return response.status
+          } else if (response.status !== 200) {
+            self.errors = 'Something went wrong.  Please try clearing your cache and restarting your browser.'
           }
+          self.setCSRFToken(headerToken)
           return response.json()
         })
         .then(response => {
@@ -116,6 +121,8 @@ export default {
     },
     logMemberIn () {
       this.$store.dispatch('logMemberIn')
+      this.$store.dispatch('getCurMember')
+      this.$store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
     },
     setCSRFToken (token) {
       this.$store.dispatch('setCSRFToken', token)

@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/maxdobeck/scheduler-frontend.svg?branch=master)](https://travis-ci.org/maxdobeck/scheduler-frontend)
-
+[![CircleCI](https://circleci.com/gh/maxdobeck/scheduler-frontend.svg?style=svg&circle-token=4317f4eb5912c3647acb9f53422a79e260e68557)](https://circleci.com/gh/maxdobeck/scheduler-frontend)
 # Scheduler-Frontend
 
 > Frontend Vue.js app.

@@ -8,6 +8,7 @@
     "serve": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "yarn lint && yarn run serve",
     "lint": "eslint --ext .js,.vue src",
+    "test": "yarn lint",
     "build": "node build/build.js",
     "buildTest": "node build/buildTest.js"
   },

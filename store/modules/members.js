@@ -71,6 +71,9 @@
         credentials: 'include'
       })
         .then(function (response) {
+          if (response.status !== 200) {
+            console.log('Member could not be retrieved.')
+          }
           return response.json()
         })
         .then(function (response) {
@@ -78,7 +81,6 @@
             console.log("Problem fetching current user's data.")
           }
           else {
-            console.log("We're trying to update the curmember in vuex: ", response.member.email)
             commit('setMemberEmail', response.member.email)
             commit('setMemberName', response.member.name)
             commit('setMemberId',response.member.id)
@@ -101,7 +103,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.DEV_API
 } else if (process.env.NODE_ENV === 'test') {
   api = process.env.TEST_API
-} else {
+} else if (process.env.NODE_ENV === 'production') {
   api = process.env.PROD_API
 }
 const apiCurMember = api + 'curmember'

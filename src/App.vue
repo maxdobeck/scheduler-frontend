@@ -60,7 +60,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.DEV_API
 } else if (process.env.NODE_ENV === 'test') {
   api = process.env.TEST_API
-} else {
+} else if (process.env.NODE_ENV === 'production') {
   api = process.env.PROD_API
 }
 const apiURL = api + 'csrftoken'
@@ -81,6 +81,15 @@ export default {
     logMemberOut () {
       store.dispatch('logMemberOut')
       this.$router.push('/')
+    },
+    async obtainCSRFToken () {
+      console.log('I am getting the CSRF Token a second time!')
+      fetch(apiURL, {
+        method: 'GET',
+        credentials: 'include'
+      })
+        .then(response => this.setCSRFToken(response.headers.get('X-CSRF-Token')))
+      await store.dispatch('getCurMember')
     }
   },
   computed: {
@@ -91,16 +100,15 @@ export default {
       memberEmail: 'memberEmail'
     })
   },
-  created:
-    async function () {
-      fetch(apiURL, {
-        method: 'GET',
-        credentials: 'include'
-      })
-        .then(response => this.setCSRFToken(response.headers.get('X-CSRF-Token')))
-      await store.dispatch('getCurMember')
-      await store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
-    }
+  mounted: async function () {
+    fetch(apiURL, {
+      method: 'GET',
+      credentials: 'include'
+    })
+      .then(response => this.setCSRFToken(response.headers.get('X-CSRF-Token')))
+    await store.dispatch('getCurMember')
+    await store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
+  }
 }
 </script>
 

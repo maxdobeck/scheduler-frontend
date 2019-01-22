@@ -16,12 +16,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import store from '../../../store/index'
 let api // Need to find a way to turn all this into a function
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.DEV_API
 } else if (process.env.NODE_ENV === 'test') {
   api = process.env.TEST_API
-} else {
+} else if (process.env.NODE_ENV === 'production') {
   api = process.env.PROD_API
 }
 const apiNewSchedule = api + 'schedules'
@@ -53,6 +54,7 @@ export default {
             this.errors = response.Errors
           } else {
             this.newScheduleTitle = ''
+            store.dispatch('getOwnedSchedules', this.$store.getters.curMemberId)
             this.$router.push('/schedules')
           }
         })

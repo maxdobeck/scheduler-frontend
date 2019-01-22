@@ -2,16 +2,17 @@
   <div class="schedule-container" >
     <div class="schedule-header">
       <div class="schedule-title">
-      <p v-show="editTitle === false"
-        @dblclick="editTitle = true"
+      <p v-if="editTitle === false"
+        @dblclick="editTitle = true; newTitle = schedule.Title"
         id="header">
         {{ schedule.Title }}
       </p>
-      <input v-show="editTitle === true"
+      <input type="text"
+        v-focus
+        v-if="editTitle === true"
         v-model="newTitle"
         @keyup.enter = "saveTitle"
         v-on:blur = "editTitle = false"
-        placeholder="New Schedule Title"
         id="header">
       </div>
       <div class="schedule-links">
@@ -37,10 +38,15 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   api = process.env.DEV_API
 } else if (process.env.NODE_ENV === 'test') {
   api = process.env.TEST_API
-} else {
+} else if (process.env.NODE_ENV === 'production') {
   api = process.env.PROD_API
 }
 const apiSchedules = api + 'schedules'
+const focus = {
+  inserted (el) {
+    el.focus()
+  }
+}
 export default {
   components: {
     Calendar
@@ -55,15 +61,17 @@ export default {
     }
   },
   name: 'Schedules',
+  directives: { focus },
   // Investigate alt method where we use the BeforeRouteEnter and BeforeRouteUpdate router guard to make the update
   // https://router.vuejs.org/guide/advanced/data-fetching.html#fetching-after-navigation
   // https://router.vuejs.org/guide/advanced/navigation-guards.html#in-component-guards
   watch: {
-    // call again the method if the route changes
+    // Fix this shit like with the Shifts pattern matcher
     '$route': 'getSchedule'
   },
   methods: {
     getSchedule () {
+      console.log('Please stop using this :(.  Fix it like you did with the other routing pattern matching.')
       this.alert = false
       let self = this
       // make api call
@@ -88,7 +96,7 @@ export default {
     async saveTitle () {
       // Make API call here
       let self = this
-      await fetch(apiSchedules + '/' + this.schedule.Id + '/title', {
+      await fetch(apiSchedules + '/' + this.schedule.ID + '/title', {
         method: 'PATCH',
         credentials: 'include',
         headers: {
