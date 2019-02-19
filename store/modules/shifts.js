@@ -33,6 +33,7 @@ const actions = {
         console.log("Problem fetching shifts for schedule.", scheduleID)
       } else {
         console.log(response.FoundShifts[0])
+        addURI(response.FoundShifts)
         commit('setShifts', response.FoundShifts)
       }
     })
@@ -57,4 +58,10 @@ export default {
   mutations,
   actions,
   getters
+}
+
+function addURI (shifts) {
+  for (let i in shifts) {
+    shifts[i].URI = shifts[i].Title.replace(/ /g, '-')
+  }
 }

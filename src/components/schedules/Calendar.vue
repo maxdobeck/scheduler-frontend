@@ -57,49 +57,49 @@
           <td>
             <ul v-for="shift in shifts" :key="shift.id">
               <li v-if="shift.Sun && stopDateCheck(shift.Stop, sunDate)">
-                {{ shift.Title }}
+                <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
               </li>
             </ul>
           </td>
           <td>
             <ul v-for="shift in shifts" :key="shift.id">
               <li v-if="shift.Mon && stopDateCheck(shift.Stop, sunDate)">
-                {{ shift.Title }}
+                <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
               </li>
             </ul>
           </td>
           <td>
             <ul v-for="shift in shifts" :key="shift.id">
               <li v-if="shift.Tue && stopDateCheck(shift.Stop, tueDate)">
-                {{ shift.Title }}
+                <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
               </li>
             </ul>
           </td>
           <td>
             <ul v-for="shift in shifts" :key="shift.id">
               <li v-if="shift.Wed && stopDateCheck(shift.Stop, wedDate)">
-                {{ shift.Title }}
+                <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
               </li>
             </ul>
           </td>
           <td>
             <ul v-for="shift in shifts" :key="shift.id">
               <li v-if="shift.Thur && stopDateCheck(shift.Stop, thuDate)">
-                {{ shift.Title }}
+                <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
               </li>
             </ul>
           </td>
           <td>
             <ul v-for="shift in shifts" :key="shift.id">
               <li v-if="shift.Fri && stopDateCheck(shift.Stop, friDate)">
-                {{ shift.Title }}
+                <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
               </li>
             </ul>
           </td>
           <td>
             <ul v-for="shift in shifts" :key="shift.id">
               <li v-if="shift.Sat && stopDateCheck(shift.Stop, satDate)">
-                {{ shift.Title }}
+                <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
               </li>
             </ul>
           </td>
@@ -206,6 +206,9 @@ export default {
   }
   .date-hud {
     display: inline-block;
+  }
+  ul {
+    list-style-type: none;
   }
   .enrollee-nav {
     display: inline-block;

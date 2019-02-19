@@ -13,6 +13,7 @@ import NewSchedule from '@/components/schedules/NewSchedule'
 import Schedule from '@/components/schedules/Schedule'
 import NoAccess from '@/components/schedules/NoAccess'
 import NewShift from '@/components/shifts/NewShift'
+// import Shift from  '@/components/shifts/Shift'
 
 Vue.use(Router)
 
