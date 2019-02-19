@@ -210,6 +210,11 @@ export default {
   ul {
     list-style-type: none;
   }
+
+  ul li a {
+    text-decoration: none;
+    color: black;
+  }
   .enrollee-nav {
     display: inline-block;
     vertical-align: middle;
