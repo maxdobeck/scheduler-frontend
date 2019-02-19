@@ -82,7 +82,5 @@ workflows:
           requires:
             - build
           filters:
-            tags:
-              only: /^prod-*/
             branches:
-              ignore: master
+              only: prod
