@@ -13,7 +13,7 @@ import NewSchedule from '@/components/schedules/NewSchedule'
 import Schedule from '@/components/schedules/Schedule'
 import NoAccess from '@/components/schedules/NoAccess'
 import NewShift from '@/components/shifts/NewShift'
-// import Shift from  '@/components/shifts/Shift'
+import Shift from '@/components/shifts/Shift'
 
 Vue.use(Router)
 
@@ -28,7 +28,7 @@ export default new Router({
     // This is the CRUD page for the schedule and shifts on the schedule so only the owner(s) should be able to reach it
     { path: '/schedules/:id', name: 'Schedule', component: Schedule, beforeEnter: checkAuth },
     { path: '/schedules/:id/shifts/new', name: 'NewShift', component: NewShift, beforeEnter: checkAuth },
-    // { path: '/schedules/:id/shifts/:title', name: 'Shift', component: Shift, beforeEnter: checkAuth },
+    { path: '/schedules/:id/shifts/:title', name: 'Shift', component: Shift, beforeEnter: checkAuth },
     // { path: '/schedules/:id/shifts', name: 'Shifts', component:Shifts , beforeEnter: checkAuth },
     { path: '/not-authorized', name: 'No Access', component: NoAccess },
     { path: '/login', name: 'Login', component: Login, beforeEnter: refreshCSRFToken },
