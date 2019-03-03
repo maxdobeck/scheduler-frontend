@@ -1,22 +1,39 @@
 <template>
 <div>
-  Shifts
+  <h1>{{ shift.Title }}</h1>
+
 </div>
 </template>
 
 <script>
-// import { mapGetters } from 'vuex'
-// let api // Need to find a way to turn all this into a function
-// if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
-//   api = process.env.DEV_API
-// } else if (process.env.NODE_ENV === 'test') {
-//   api = process.env.TEST_API
-// } else if (process.env.NODE_ENV === 'production') {
-//   api = process.env.PROD_API
-// }
-// const apiSchedules = api + 'shifts'
-
+import { mapGetters } from 'vuex'
 export default {
+  data () {
+    return {
+      shiftURI: '',
+      shift: ''
+    }
+  },
+  name: 'Shift',
+  watch: {
+    '$route': 'setShift'
+  },
+  methods: {
+    async setShift () {
+      this.shiftURI = this.$route.params.title
+      await this.$store.dispatch('getShifts', this.$route.params.id)
+      for (let i in this.shifts) {
+        if (this.shifts[i].URI === this.shiftURI) {
+          this.shift = this.shifts[i]
+        }
+      }
+    }
+  },
+  computed: {
+    ...mapGetters({
+      shifts: 'shifts'
+    })
+  }
 }
 </script>
 
