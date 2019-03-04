@@ -221,6 +221,7 @@ export default {
   ul {
     list-style-type: none;
     padding: 0;
+    text-align: center;
   }
   ul li a {
     color: light-blue;
