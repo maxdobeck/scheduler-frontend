@@ -33,6 +33,9 @@ export default {
     ...mapGetters({
       shifts: 'shifts'
     })
+  },
+  mounted () {
+    this.setShift()
   }
 }
 </script>
