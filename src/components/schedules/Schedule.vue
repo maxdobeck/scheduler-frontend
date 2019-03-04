@@ -17,7 +17,7 @@
       </div>
       <div class="schedule-links">
         <router-link to="#" class="schedule-meta">PTO Board</router-link>
-        <router-link to="#" class="schedule-meta">Shifts</router-link>
+        <router-link :to='`/schedules/${schedule.ID}/shifts`' class="schedule-meta">Shifts</router-link>
         <div id="alert" v-show="alert === true">
           <p> {{ errors }} </p>
           <button @click="alert = false">ok</button>
