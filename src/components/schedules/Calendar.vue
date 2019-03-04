@@ -55,51 +55,58 @@
         </thead>
         <tbody>
           <td>
-            <ul v-for="shift in shifts" :key="shift.id">
-              <li v-if="shift.Sun && stopDateCheck(shift.Stop, sunDate)">
+            <ul>
+              <li v-for="shift in shifts" :key="shift.id" v-if="shift.Sun && stopDateCheck(shift.Stop, sunDate)">
                 <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
+                <p>{{ shift.Start }} to {{ shift.End }}</p>
               </li>
             </ul>
           </td>
           <td>
-            <ul v-for="shift in shifts" :key="shift.id">
-              <li v-if="shift.Mon && stopDateCheck(shift.Stop, sunDate)">
+            <ul>
+              <li v-for="shift in shifts" :key="shift.id" v-if="shift.Mon && stopDateCheck(shift.Stop, sunDate)">
                 <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
+                <p>{{ shift.Start }} to {{ shift.End }}</p>
               </li>
             </ul>
           </td>
           <td>
-            <ul v-for="shift in shifts" :key="shift.id">
-              <li v-if="shift.Tue && stopDateCheck(shift.Stop, tueDate)">
+            <ul>
+              <li v-for="shift in shifts" :key="shift.id" v-if="shift.Tue && stopDateCheck(shift.Stop, tueDate)">
                 <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
+                <p>{{ shift.Start }} to {{ shift.End }}</p>
               </li>
             </ul>
           </td>
           <td>
-            <ul v-for="shift in shifts" :key="shift.id">
-              <li v-if="shift.Wed && stopDateCheck(shift.Stop, wedDate)">
+            <ul>
+              <li v-for="shift in shifts" :key="shift.id" v-if="shift.Wed && stopDateCheck(shift.Stop, wedDate)">
                 <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
+                <p>{{ shift.Start }} to {{ shift.End }}</p>
               </li>
             </ul>
           </td>
           <td>
-            <ul v-for="shift in shifts" :key="shift.id">
-              <li v-if="shift.Thur && stopDateCheck(shift.Stop, thuDate)">
+            <ul>
+              <li v-for="shift in shifts" :key="shift.id" v-if="shift.Thur && stopDateCheck(shift.Stop, thuDate)">
                 <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
+                <p>{{ shift.Start }} to {{ shift.End }}</p>
               </li>
             </ul>
           </td>
           <td>
-            <ul v-for="shift in shifts" :key="shift.id">
-              <li v-if="shift.Fri && stopDateCheck(shift.Stop, friDate)">
+            <ul>
+              <li v-for="shift in shifts" :key="shift.id" v-if="shift.Fri && stopDateCheck(shift.Stop, friDate)">
                 <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
+                <p>{{ shift.Start }} to {{ shift.End }}</p>
               </li>
             </ul>
           </td>
           <td>
-            <ul v-for="shift in shifts" :key="shift.id">
-              <li v-if="shift.Sat && stopDateCheck(shift.Stop, satDate)">
-                <router-link id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
+            <ul>
+              <li v-for="shift in shifts" :key="shift.id">
+                <router-link  v-if="shift.Sat && stopDateCheck(shift.Stop, satDate)" id="shift-title" :to='`/schedules/${scheduleID}/shifts/${shift.URI}`'>{{ shift.Title }}</router-link>
+                <p v-if="shift.Sat && stopDateCheck(shift.Stop, satDate)">{{ shift.Start }} to {{ shift.End }}</p>
               </li>
             </ul>
           </td>
@@ -141,6 +148,7 @@ export default {
       this.$router.push(`/schedules/${this.$route.params.id}/shifts/new`)
     },
     stopDateCheck: function (stop, cur) {
+      // Check if current date is after shift.Stop date
       return moment(stop, 'YYYY-MM-DD').isAfter(cur)
     }
   },
@@ -207,13 +215,15 @@ export default {
   .date-hud {
     display: inline-block;
   }
+  td {
+    vertical-align: top;
+  }
   ul {
     list-style-type: none;
+    padding: 0;
   }
-
   ul li a {
-    text-decoration: none;
-    color: black;
+    color: light-blue;
   }
   .enrollee-nav {
     display: inline-block;
